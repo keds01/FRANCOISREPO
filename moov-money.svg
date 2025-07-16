@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="moov-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F47B20;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F9B233;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="150" cy="150" r="140" fill="#1A2E35" stroke="url(#moov-gradient)" stroke-width="10"/>
+  <text x="150" y="120" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#FFFFFF">MOOV</text>
+  <text x="150" y="180" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="#FFFFFF">MONEY</text>
+  <path d="M80,210 C80,190 100,180 150,180 C200,180 220,190 220,210" stroke="url(#moov-gradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <circle cx="150" cy="90" r="25" fill="url(#moov-gradient)"/>
+</svg>
