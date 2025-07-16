@@ -276,3 +276,149 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Menu hamburger responsive overlay amélioré
+window.addEventListener('DOMContentLoaded', function() {
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+  const navItems = document.querySelectorAll('.nav-links a');
+  const body = document.body;
+  
+  if (hamburger && navLinks) {
+    // Gestion du menu hamburger
+    hamburger.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+      hamburger.classList.toggle('active');
+      body.classList.toggle('menu-open', navLinks.classList.contains('open'));
+      
+      // Accessibilité: focus sur le premier élément du menu
+      if (navLinks.classList.contains('open')) {
+        setTimeout(() => { navItems[0]?.focus(); }, 200);
+      }
+      
+      // Empêcher le défilement du corps quand le menu est ouvert
+      if (body.classList.contains('menu-open')) {
+        body.style.overflow = 'hidden';
+      } else {
+        body.style.overflow = '';
+      }
+    });
+    
+    // Fermer le menu quand on clique sur un lien
+    navItems.forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+        body.classList.remove('menu-open');
+        body.style.overflow = '';
+      });
+    });
+    
+    // Fermer le menu si on clique en dehors (overlay)
+    navLinks.addEventListener('click', function(e) {
+      if (e.target === navLinks) {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+        body.classList.remove('menu-open');
+        body.style.overflow = '';
+      }
+    });
+    
+    // Fermer le menu avec Echap
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('active');
+        body.classList.remove('menu-open');
+        body.style.overflow = '';
+        hamburger.focus();
+      }
+    });
+  }
+  
+  // Gestion des images responsives avec lazy loading
+  const images = document.querySelectorAll('img');
+  if ('loading' in HTMLImageElement.prototype) {
+    // Le navigateur supporte le lazy loading natif
+    images.forEach(img => {
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+    });
+  } else {
+    // Fallback pour les navigateurs qui ne supportent pas le lazy loading natif
+    const lazyLoadImages = () => {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const image = entry.target;
+            const src = image.getAttribute('data-src');
+            if (src) {
+              image.src = src;
+              image.removeAttribute('data-src');
+            }
+            observer.unobserve(image);
+          }
+        });
+      });
+      
+      images.forEach(img => {
+        if (img.getAttribute('data-src')) {
+          imageObserver.observe(img);
+        }
+      });
+    };
+    
+    lazyLoadImages();
+  }
+  
+  // Optimisation des animations pour les appareils mobiles
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  if (isMobile || prefersReducedMotion) {
+    // Réduire les animations sur mobile ou si l'utilisateur préfère moins d'animations
+    const animationElements = document.querySelectorAll('[data-aos]');
+    animationElements.forEach(el => {
+      el.setAttribute('data-aos-duration', '600');
+      el.setAttribute('data-aos-once', 'true');
+    });
+    
+    // Désactiver le curseur personnalisé sur mobile
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-dot-outline');
+    
+    if (cursorDot && cursorOutline) {
+      cursorDot.style.display = 'none';
+      cursorOutline.style.display = 'none';
+    }
+  }
+});
+
+// Gestion du redimensionnement de la fenêtre
+window.addEventListener('resize', debounce(function() {
+  // Vérifier si le menu mobile est ouvert et le fermer si l'écran est agrandi
+  const navLinks = document.querySelector('.nav-links');
+  const hamburger = document.querySelector('.hamburger');
+  const body = document.body;
+  
+  if (window.innerWidth > 991 && navLinks && navLinks.classList.contains('open')) {
+    navLinks.classList.remove('open');
+    hamburger.classList.remove('active');
+    body.classList.remove('menu-open');
+    body.style.overflow = '';
+  }
+}, 250));
+
+// Fonction utilitaire pour limiter la fréquence d'exécution (debounce)
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
